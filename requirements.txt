@@ -1,0 +1,6 @@
+openai==1.76.0
+pydantic==2.10.3
+qwen_agent==0.0.18
+pyyaml==6.0.2
+python-dateutil==2.9.0
+python-dotenv==1.1.0

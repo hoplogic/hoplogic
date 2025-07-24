@@ -1,0 +1,31 @@
+system_model_config:
+  inference_engine: "bailian"
+  openai:
+    api_key: "/etc/bailian-key"  
+    base_url: "your_base_url"
+  model: "qwen-plus"
+  max_tokens: 4000  # 需要调大时修改此处
+  # frequency_penalty: 0.0
+  # max_completion_tokens: 1000
+  # n: 1
+  # stream: false
+  # temperature: 0.1
+  # top_p: 1.0
+  # timeout: 120
+  # max_retry_count: 3 #模型最大重试次数
+
+verify_model_config:
+  inference_engine: "aistudio-vllm"
+  openai:
+    api_key: "/etc/aistudio-key"  
+    base_url: "your_base_url"
+  model: "Qwen3-235B-A22B"
+  max_tokens: 4000  # 需要调大时修改此处
+  # frequency_penalty: 0.0
+  # max_completion_tokens: 1000
+  # n: 1
+  # stream: false
+  # temperature: 0.1
+  # top_p: 1.0
+  # timeout: 120
+  # max_retry_count: 3 #模型最大重试次数
