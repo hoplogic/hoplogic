@@ -79,7 +79,7 @@
 * 通过案例快速上手
   * [HOP钓鱼邮件案例](docs/phishing_examples_guide.md)
 
-	# 开源贡献
+# 开源贡献
 欢迎任何形式的贡献！待项目更加稳定后，我们将发布贡献指南并接受 Pull Request。
 
 # License
