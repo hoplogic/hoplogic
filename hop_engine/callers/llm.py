@@ -67,10 +67,16 @@ class LLM:
                                 "json_schema": {"schema": json_schema},
                             },
                         )
-                    elif self.inference_engine in ["siliconflow", "bailian"]:
+                    elif self.inference_engine in ["siliconflow"]:
                         response = client.chat.completions.create(
                             **params,
                             response_format={"type": "json_object"},
+                        )
+                    # bailian 不使用 json_object
+                    elif self.inference_engine in ["bailian"]:
+                        params["extra_body"]["enable_thinking"] = False
+                        response = client.chat.completions.create(
+                            **params,
                         )
                     else:
                         response = client.beta.chat.completions.parse(
