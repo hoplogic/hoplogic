@@ -73,47 +73,27 @@ def extract_json_from_string(s: str) -> str:
         r"^\s*```json|```\s*$", "", json_str, flags=re.IGNORECASE | re.MULTILINE
     )
 
-    # 容错处理流程
-    for _ in range(2):  # 最多尝试两次解析
-        try:
-            # 尝试直接解析JSON
-            parsed = json.loads(json_str)
-            if "properties" in parsed:
-                parsed = parsed["properties"]
-            return json.dumps(parsed, ensure_ascii=False)
-        except json.JSONDecodeError:
-            # 尝试修复Python风格的字典
-            try:
-                parsed = ast.literal_eval(json_str)
-                if isinstance(parsed, dict):
-                    # 转换Python布尔值到JSON兼容格式
-                    converted = {
-                        k: str(v).lower() if isinstance(v, bool) else v
-                        for k, v in parsed.items()
-                    }
-                    if "properties" in converted:
-                        converted = converted["properties"]
-                    return json.dumps(converted, ensure_ascii=False)
-            except (SyntaxError, ValueError):
-                # 修复常见JSON错误
-                json_str = json_str.replace("'", '"')
-                json_str = re.sub(r"(?<!\\)\"", '"', json_str)  # 处理转义引号
-                json_str = re.sub(r",\s*(?=[}\]])", "", json_str)  # 移除尾部逗号
-
     # 最终验证
     try:
         parsed = json.loads(json_str)
-        if "properties" in parsed:
-            parsed = parsed["properties"]
+        # 提取所需字段的专用逻辑
+        if "explanation" in parsed and "final_answer" in parsed:
+            return json.dumps(
+                {
+                    "explanation": parsed["explanation"],
+                    "final_answer": parsed["final_answer"],
+                },
+                ensure_ascii=False,
+            )
         return json.dumps(parsed, ensure_ascii=False)
-    except Exception as e:
+    except json.JSONDecodeError as e:
         raise ValueError(f"无法解析JSON内容: {str(e)}")
 
 
 def create_response_format_model(
     model_name: str,
     return_format: Any = None,
-    explanation_description: str = "对于输出结果的解释"
+    explanation_description: str = "对于输出结果的解释",
 ) -> Type[BaseModel]:
 
     explanation_field = (str, Field(..., description=explanation_description))
