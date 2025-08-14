@@ -100,44 +100,6 @@ def hop_judge(first, second, tem):
     return result
 
 
-def hop_judge(first, second, tem):
-    error_count = 0
-    llm_create_item = """
-你是一个医疗专家，以下是一个病人在治疗期间的两个收费项目关于【{tem}】的详情：
-1 {first},
-2 {second}。
-判断这两个收费项在【{tem}】是否有重复的情况。返回True表示有重叠，返回False表示没有重叠。reason表示判断原因，不超过50个字。
-""".format(
-        first=first, second=second, tem=tem
-    )
-    verify_flag = False
-    while not verify_flag and error_count < 3:
-        subject_structure = {
-            "result": (bool, ...),
-            "reason": (str, ...),
-        }
-        status, result = hop_proc.hop_get(
-            task=llm_create_item,
-            context="",
-            return_format=subject_structure,
-            verifier=None,
-        )
-        logger.info("msg:======hop_judge原始结果====")
-        logger.info(result)
-        hop_judge_verification_result = hop_judge_verification(
-            first, second, tem, result
-        )
-        logger.info("msg:======hop_judge_verification====")
-        logger.info(hop_judge_verification_result)
-        # 如核验不通过
-        if "核验通过" in hop_judge_verification_result:
-            verify_flag = True
-        else:
-            error_count += 1
-            logger.info("msg:======核验不通过重新判断====")
-    return result
-
-
 def hop_judge_verification(first, second, tem, hop_juge_result):
     llm_create_item = """
 # 要求：
@@ -452,22 +414,31 @@ def double_charge(input_log):
                                 logger.info("MSG:=====当前处理阶段：{}====".format(tem))
                                 first_curr_tem = hop_entity_extract(first_info, tem)
                                 logger.info(
-                                    "msg:====第一个收费项目提取的{tem}相应实体===".format(tem=tem)
+                                    "msg:====第一个收费项目提取的{tem}相应实体===".format(
+                                        tem=tem
+                                    )
                                 )
                                 logger.info(first_curr_tem)
                                 log_info += (
-                                    "msg:====第一个收费项目提取的{tem}相应实体===".format(tem=tem)
+                                    "msg:====第一个收费项目提取的{tem}相应实体===".format(
+                                        tem=tem
+                                    )
                                     + "\n"
                                 )
                                 log_info += str(first_curr_tem) + "\n"
                                 first_dic[tem] = first_curr_tem
                                 second_curr_tem = hop_entity_extract(second_info, tem)
                                 logger.info(
-                                    "msg:====第二个收费项目提取的{tem}===".format(tem=tem)
+                                    "msg:====第二个收费项目提取的{tem}===".format(
+                                        tem=tem
+                                    )
                                 )
                                 logger.info(second_curr_tem)
                                 log_info += (
-                                    "msg:====第二个收费项目提取的{tem}===".format(tem=tem) + "\n"
+                                    "msg:====第二个收费项目提取的{tem}===".format(
+                                        tem=tem
+                                    )
+                                    + "\n"
                                 )
                                 log_info += str(second_curr_tem) + "\n"
                                 # 判断first与second的是否有重合
@@ -543,7 +514,9 @@ def print_hop_metrics(stats, func_name, is_global=False):
     logger.info("\nHOP算子执行统计:")
     for op_name, data in operator_stats.items():
         logger.info(f"「{op_name}」调用成功率: {data['success_rate']*100:.1f}%")
-        logger.info(f"平均耗时: {data['avg_time']:.3f}s | 最大耗时: {data['max_time']:.3f}s")
+        logger.info(
+            f"平均耗时: {data['avg_time']:.3f}s | 最大耗时: {data['max_time']:.3f}s"
+        )
         logger.info(f"累计重试次数: {data['total_retries']}次")
 
     # 获取函数级统计

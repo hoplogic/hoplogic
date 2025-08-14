@@ -17,6 +17,7 @@ class CmdParTool(BaseTool):
     ]
 
     def call(self, par: str, **kwargs) -> str:
+        wants_executable_permission = False
         cmd_input = json.loads(par).get("cmd")
         if type(cmd_input) == str:
             cmd_list = [cmd_input]
