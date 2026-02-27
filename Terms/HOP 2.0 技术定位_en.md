@@ -131,20 +131,20 @@ These three paradigms form a continuous spectrum from "fully deterministic" to "
 HOP chose the middle ground of the spectrum. The next question is: how does this "middle ground" land in engineering? HOP 2.0's technical system consists of four layers, each with clear responsibilities and independent evolution:
 
 ```
-┌────────────────────────────┐
-│  Spec Layer (Specification) │  HopSpec.md — 7 atomic types tree structure
-│  Answers "what to do"        │  Human-readable, machine-parsable
-├────────────────────────────┤
-│  Verification Layer (Static Audit) │  Deterministic verification — zero LLM cost
-│  Answers "is structure correct"    │  Structural integrity/type/tree/data flow/verification coverage/naming/subtask constraints
-├────────────────────────────┤
-│  Execution Layer (Runtime Scheduling) │  SpecExecutor — tree traversal scheduling
-│  Answers "how to run"               │  Deterministic control flow + HopSession operator calls
-│                                    │  subtask: supports runtime sub-step generation + breakpoint resume
-├────────────────────────────┤
+┌────────────────────────────-------------┐
+│  Spec Layer (Specification)             │  HopSpec.md — 7 atomic types tree structure
+│  Answers "what to do"                   │  Human-readable, machine-parsable
+├────────────────────────────-------------┤
+│  Verification Layer (Static Audit)      │  Deterministic verification — zero LLM cost
+│  Answers "is structure correct"         │  Structural integrity/type/tree/data flow/verification coverage/naming/subtask constraints
+├────────────────────────────-------------┤
+│  Execution Layer (Runtime Scheduling)   │  SpecExecutor — tree traversal scheduling
+│  Answers "how to run"                   │  Deterministic control flow + HopSession operator calls
+│                                         │  subtask: supports runtime sub-step generation + breakpoint resume
+├────────────────────────────-------------┤
 │  Verification Layer (Result Validation) │  Reverse verification / forward cross / tool verification
-│  Answers "is result correct"          │  Each LLM step independent verification loop
-└────────────────────────────┘
+│  Answers "is result correct"            │  Each LLM step independent verification loop
+└────────────────────────────-------------┘
 ```
 
 Key properties brought by this layering:
@@ -576,19 +576,19 @@ Sync mechanism based on step_name alignment:
 
 ```
 Echo (Industry Expert)                    Delta (Technical Expert)
-    │                                  │
-    ├─ Modify HopSpec.md                 │
-    │  (adjust flow/verification strategy)               │
-    │                                  │
-    ├─ /specsync ─────────────────────▶│ Code incremental update
-    │                                  │
-    │                                  ├─ /hoprun debug
-    │                                  │  (fix execution issues)
-    │                                  │
-    │◀──────────────────── /code2spec ─┤ Spec reverse sync
-    │                                  │
-    ├─ /verifyspec review ──────────────▶│
-    │                                  │
+    │                                      │
+    ├─ Modify HopSpec.md                   │
+    │  (adjust flow/verification strategy) │
+    │                                      │
+    ├─ /specsync ────────────────────----─▶│ Code incremental update
+    │                                      │  
+    │                                      ├─ /hoprun debug
+    │                                      │  (fix execution issues)
+    │                                      │
+    │◀──────────────────── /code2spec ─----┤ Spec reverse sync
+    │                                      │
+    ├─ /verifyspec review ─────────────--─▶│
+    │                                      │
 ```
 
 This bidirectional sync ensures:
@@ -619,17 +619,17 @@ Traditional programs' other extreme - all logic must be completely determined at
 **Exploratory execution paths can progressively solidify into deterministic processes.** subtask's three expansion modes form a complete solidification path:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                                                         │
-│  think ──────────▶ dynamic (solidify) ──────▶ static        │
-│  Structured thinking    Load solidified path    Human review embed  │
-│                                                         │
-│  ↑ Exploratory        ↑ Semi-automatic       ↑ Fully deterministic   │
-│  LLM autonomous reasoning    Priority load .spec.md    Sub-steps predefined    │
-│  Each time may differ      Successful path reuse      Each execution same    │
+┌────────────────────────────────────────────────────────------------------------------------------------─┐
+│                                                                                                         │
+│  think ──────────▶ dynamic (solidify) ──────▶ static                                                    │
+│  Structured thinking    Load solidified path    Human review embed                                      │
+│                                                                                                         │
+│  ↑ Exploratory        ↑ Semi-automatic       ↑ Fully deterministic                                      │
+│  LLM autonomous reasoning    Priority load .spec.md    Sub-steps predefined                             │
+│  Each time may differ      Successful path reuse      Each execution same                               │
 │  Low efficiency (multi-round LLM)    High efficiency (skip generation)    Highest efficiency (zero LLM) │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+│                                                                                                         │
+└─────────────────────────────────────────────────────────------------------------------------------------┘
 ```
 
 #### Solidification Process
